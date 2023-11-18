@@ -28,3 +28,17 @@ func (r *Rigel) LoadConfig(config any) error {
 	// use rigel client to load config
 	return nil
 }
+
+func NewClient(serverURL, configName, schemaName string) (*Rigel, error) {
+	client := &Rigel{
+		ServerURL:  serverURL,
+		ConfigName: configName,
+		SchemaName: schemaName,
+	}
+
+	if err := client.Check(); err != nil {
+		return nil, err
+	}
+
+	return client, nil
+}
