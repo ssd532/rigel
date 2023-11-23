@@ -70,7 +70,7 @@ func TestGetConfigValue(t *testing.T) {
 	mockStorage := &mockStorage{
 		getFunc: func(ctx context.Context, key string) (string, error) {
 			// Return a predefined config value JSON string
-			return `"value"`, nil
+			return "value", nil
 		},
 	}
 
@@ -93,7 +93,7 @@ func TestConstructConfigMap(t *testing.T) {
 	mockStorage := &mockStorage{
 		getFunc: func(ctx context.Context, key string) (string, error) {
 			// Return a predefined config value JSON string
-			return `"value"`, nil
+			return "value", nil
 		},
 	}
 
@@ -131,7 +131,7 @@ func TestLoadConfig(t *testing.T) {
 			// Return a predefined config value JSON string for getConfigValue
 			switch key {
 			case "/remiges/rigel/conf/schemaName/1/key1":
-				return `"value1"`, nil
+				return "value1", nil
 			case "/remiges/rigel/conf/schemaName/1/key2":
 				return `2`, nil
 			case "/remiges/rigel/conf/schemaName/1/key3":

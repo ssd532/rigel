@@ -3,15 +3,14 @@ package main
 import (
 	"fmt"
 	"github.com/ssd532/rigel"
-	"log"
-
 	"github.com/ssd532/rigel/etcd"
+	"log"
 )
 
 type Config struct {
-	Key1 string `json:"key1"`
-	Key2 int    `json:"key2"`
-	Key3 bool   `json:"key3"`
+	DatabaseURL string `json:"database_url"`
+	MaxRetries  int    `json:"max_retries"`
+	EnableSSL   bool   `json:"enable_ssl"`
 }
 
 func main() {
@@ -28,13 +27,13 @@ func main() {
 	var config Config
 
 	// Load the config
-	err = rigelClient.LoadConfig("schemaName", 1, "configName", &config)
+	err = rigelClient.LoadConfig("appConfig", 1, "appConfig", &config)
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}
 
 	// Print the loaded config
-	fmt.Printf("Key1: %s\n", config.Key1)
-	fmt.Printf("Key2: %d\n", config.Key2)
-	fmt.Printf("Key3: %t\n", config.Key3)
+	fmt.Printf("DatabaseURL: %s\n", config.DatabaseURL)
+	fmt.Printf("MaxRetries: %d\n", config.MaxRetries)
+	fmt.Printf("EnableSSL: %t\n", config.EnableSSL)
 }

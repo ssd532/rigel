@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/ssd532/rigel/types"
 )
@@ -81,21 +82,14 @@ func (r *Rigel) getSchema(schemaName string, schemaVersion int) (*types.Schema, 
 }
 
 // getConfigValue retrieves a configuration value from Rigel based on the provided schemaName, schemaVersion, and paramName.
-func (r *Rigel) getConfigValue(schemaName string, schemaVersion int, paramName string) (interface{}, error) {
+func (r *Rigel) getConfigValue(schemaName string, schemaVersion int, paramName string) (string, error) {
 	// Construct the key for the parameter
 	key := fmt.Sprintf("/remiges/rigel/conf/%s/%d/%s", schemaName, schemaVersion, paramName)
 
 	// Retrieve the parameter value from the storage
-	paramValue, err := r.Storage.Get(context.Background(), key)
+	value, err := r.Storage.Get(context.Background(), key)
 	if err != nil {
-		return nil, err
-	}
-
-	// Unmarshal the parameter value
-	var value interface{}
-	err = json.Unmarshal([]byte(paramValue), &value)
-	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal config value: %w", err)
+		return "", err
 	}
 
 	return value, nil
@@ -107,14 +101,47 @@ func (r *Rigel) constructConfigMap(schema *types.Schema, schemaName string, sche
 	config := make(map[string]interface{})
 	for _, field := range schema.Fields {
 		// Retrieve the configuration value for the field
-		value, err := r.getConfigValue(schemaName, schemaVersion, field.Name)
+		valueStr, err := r.getConfigValue(schemaName, schemaVersion, field.Name)
 		if err != nil {
 			return nil, err
+		}
+
+		// Convert the value to the correct type based on the field type
+		var value interface{}
+		switch field.Type {
+		case "int":
+			value, err = strconv.Atoi(valueStr)
+			if err != nil {
+				return nil, fmt.Errorf("failed to convert value to int: %w", err)
+			}
+		case "bool":
+			value, err = strconv.ParseBool(valueStr)
+			if err != nil {
+				return nil, fmt.Errorf("failed to convert value to bool: %w", err)
+			}
+		default:
+			// Assume the value is a string if the field type is not "int" or "bool"
+			value = valueStr
 		}
 
 		// Add the value to the configuration map
 		config[field.Name] = value
 	}
-
 	return config, nil
+}
+
+// smartUnmarshal unmarshals
+func smartUnmarshal(input string, value *interface{}) error {
+	// Try to parse as a number.
+	if _, err := strconv.Atoi(input); err == nil {
+		return json.Unmarshal([]byte(input), value)
+	}
+
+	// Try to parse as a boolean.
+	if input == "true" || input == "false" {
+		return json.Unmarshal([]byte(input), value)
+	}
+
+	// Treat as a string and add quotes to make it valid JSON.
+	return json.Unmarshal([]byte(`"`+input+`"`), value)
 }
