@@ -9,6 +9,8 @@ import (
 	"github.com/ssd532/rigel/types"
 )
 
+const RigelPrefix = "/remiges/rigel"
+
 // Rigel represents a client for Rigel configuration manager server.
 type Rigel struct {
 	Storage types.Storage

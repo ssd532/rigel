@@ -55,3 +55,11 @@ func (e *EtcdStorage) Get(ctx context.Context, key string) (string, error) {
 
 	return value, nil
 }
+
+func (e *EtcdStorage) Put(ctx context.Context, key string, value string) error {
+	_, err := e.Client.Put(ctx, key, value)
+	if err != nil {
+		return err
+	}
+	return nil
+}
