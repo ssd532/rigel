@@ -20,3 +20,6 @@ logfile*.txt
 
 # tmp directory
 tmp
+
+# vscode
+.vscode
