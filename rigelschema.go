@@ -16,7 +16,7 @@ func (r *Rigel) AddSchema(ctx context.Context, name string, version int, fields 
 	}
 
 	// Store fields
-	fieldsKey := fmt.Sprintf("%s/schema/%s/%d/fields", RigelPrefix, name, version)
+	fieldsKey := getSchemaFieldsPath(name, version)
 	fmt.Printf("Storing fields at %s\n", fieldsKey)
 	fmt.Printf("Fields: %s\n", string(fieldsJson))
 	err = r.Storage.Put(ctx, fieldsKey, string(fieldsJson))
