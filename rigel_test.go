@@ -30,6 +30,10 @@ func (m *mockStorage) Get(ctx context.Context, key string) (string, error) {
 	return m.getFunc(ctx, key)
 }
 
+func (m *mockStorage) Put(ctx context.Context, key string, value string) error {
+	return nil
+}
+
 func TestGetSchema(t *testing.T) {
 	// Mocked Storage
 	mockStorage := &mockStorage{
