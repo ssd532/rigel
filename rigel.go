@@ -59,7 +59,7 @@ func (r *Rigel) LoadConfig(schemaName string, schemaVersion int, configName stri
 // getSchema retrieves a schema from the storage based on the provided schemaName and schemaVersion.
 func (r *Rigel) getSchema(schemaName string, schemaVersion int) (*types.Schema, error) {
 	// Construct the base key for the schema
-	baseKey := fmt.Sprintf("/remiges/rigel/schema/%s/%d", schemaName, schemaVersion)
+	baseKey := fmt.Sprintf("%s/schema/%s/%d", RigelPrefix, schemaName, schemaVersion)
 
 	// Retrieve the fields from the storage
 	fieldsKey := baseKey + "/fields"
@@ -86,7 +86,7 @@ func (r *Rigel) getSchema(schemaName string, schemaVersion int) (*types.Schema, 
 // getConfigValue retrieves a configuration value from Rigel based on the provided schemaName, schemaVersion, and paramName.
 func (r *Rigel) getConfigValue(schemaName string, schemaVersion int, paramName string) (string, error) {
 	// Construct the key for the parameter
-	key := fmt.Sprintf("/remiges/rigel/conf/%s/%d/%s", schemaName, schemaVersion, paramName)
+	key := fmt.Sprintf("%s/conf/%s/%d/%s", RigelPrefix, schemaName, schemaVersion, paramName)
 
 	// Retrieve the parameter value from the storage
 	value, err := r.Storage.Get(context.Background(), key)
