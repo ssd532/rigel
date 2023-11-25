@@ -131,19 +131,3 @@ func (r *Rigel) constructConfigMap(schema *types.Schema, schemaName string, sche
 	}
 	return config, nil
 }
-
-// smartUnmarshal unmarshals
-func smartUnmarshal(input string, value *interface{}) error {
-	// Try to parse as a number.
-	if _, err := strconv.Atoi(input); err == nil {
-		return json.Unmarshal([]byte(input), value)
-	}
-
-	// Try to parse as a boolean.
-	if input == "true" || input == "false" {
-		return json.Unmarshal([]byte(input), value)
-	}
-
-	// Treat as a string and add quotes to make it valid JSON.
-	return json.Unmarshal([]byte(`"`+input+`"`), value)
-}
